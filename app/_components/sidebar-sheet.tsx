@@ -56,10 +56,12 @@ const SideBarSheet = () => {
                     </Button>
                 </SheetClose>
                 
-                <Button className="justify-start gap-2" variant={'ghost'}>
-                    <CalendarIcon size={18}/>
-                    Agendamento
-                    </Button>
+                <Button className="justify-start gap-2" variant={'ghost'} asChild>
+                    <Link href="/bookings">
+                        <CalendarIcon size={18}/>
+                        Agendamento
+                    </Link>
+                </Button>
             </div>
             <div className="py-5 flex flex-col gap-2 border-b border-solid">
                 {quickSearchOptions.map(option => (

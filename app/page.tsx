@@ -7,15 +7,36 @@ import { quickSearchOptions } from "./_constants/search";
 import BookingItem from "./_components/booking-item";
 import Search from "./_components/search";
 import Link from "next/link";
+import { authOptions } from "./_lib/auth";
+import { getServerSession } from "next-auth";
 
 
 const Home = async () => {
+  const session = await getServerSession(authOptions)
   const barbershops = await db.barbershop.findMany({})
   const popularBarbershops = await db.barbershop.findMany({
     orderBy: {
       name: 'desc'
     }
   })
+  const bookings = session?.user ? await db.booking.findMany({
+    where: {
+      userId: (session?.user as any).id
+    },
+    include: {
+        service: {
+            include:  {
+                barbershop: true
+            }
+        }
+    },
+    orderBy: {
+      date: 'asc'
+    }
+  }) : []
+
+  const confirmedBookings = bookings.filter(booking => booking.date > new Date())
+
   return (
       <div>
         {/* Header */}
@@ -43,7 +64,12 @@ const Home = async () => {
             <Image alt="Agende com os melhores" src="/banner-01.png" fill className="object-cover rounded-xl"/>
           </div>
           {/* Booking Item */}
-          <BookingItem/>
+          {confirmedBookings[0] && <h2 className="mt-6 mb-3 uppercase text-gray-400 font-bold text-xs">Agendamentos</h2>}
+          <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+            {confirmedBookings.map(booking => (
+              <BookingItem key={booking.id} booking={booking}/>
+            ))}
+          </div>
           {/* Recomendados */}
           <h2 className="mt-6 mb-3 uppercase text-gray-400 font-bold text-xs">Recomendados</h2>
           <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
