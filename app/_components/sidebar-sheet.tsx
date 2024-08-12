@@ -72,12 +72,15 @@ const SideBarSheet = () => {
                     </Button>
                 ))}
             </div>
-            <div className="py-5 flex flex-col gap-2 border-b border-solid">
-                <Button className="justify-start gap-2" variant={'ghost'} onClick={handleSignOutClick}>
-                    <LogOutIcon/>
-                    Sair da Conta
-                </Button>
-            </div>
+            {data?.user && (
+                <div className="py-5 flex flex-col gap-2 border-b border-solid">
+                    <Button className="justify-start gap-2" variant={'ghost'} onClick={handleSignOutClick}>
+                        <LogOutIcon/>
+                        Sair da Conta
+                    </Button>
+                </div>
+            )}
+            
         </SheetContent>
     );
 }
